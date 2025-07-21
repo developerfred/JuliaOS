@@ -29,6 +29,14 @@ max_gas_price = 100.0  # Maximum gas price in GWEI
 max_slippage = 0.01    # Maximum slippage for swaps (1%)
 supported_chains = ["ethereum", "polygon", "solana"]
 
+rpc_urls.base = "https://mainnet.base.org"
+rpc_urls.solana = "https://api.mainnet-beta.solana.com"
+rpc_urls.polygon = "https://polygon-rpc.com"
+rpc_urls.arbitrum = "https://arb1.arbitrum.io/rpc"
+rpc_urls.optimism = "https://mainnet.optimism.io"
+rpc_urls.avalanche = "https://api.avax.network/ext/bc/C/rpc"
+rpc_urls.bsc = "https://bsc-dataseed.binance.org"
+
 # Swarm configuration
 [swarm]
 default_algorithm = "DE"  # Differential Evolution

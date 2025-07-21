@@ -45,6 +45,22 @@ catch e
 end
 
 # --- Include Core Blockchain Modules ---
+try
+    include("blockchain/CrossChainBridge.jl")
+    include("api/BridgeHandlers.jl")
+
+    using .CrossChainBridge, .BridgeHandlers
+    @info "JuliaOSFramework: CrossChainBridge modules included and using'd successfully."
+    function start_server()
+        router = HTTP.Router()
+                
+        BridgeHandlers.register_bridge_routes(router)
+    end
+catch e
+    @error "JuliaOSFramework: Critical error including CrossChainBridge modules." exception=(e, catch_backtrace())
+end
+
+# --- Include Core Blockchain Modules ---
 # try
 #     # EthereumClient.jl is included by Blockchain.jl
 #     include("../blockchain/Blockchain.jl")

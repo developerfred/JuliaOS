@@ -28,6 +28,8 @@ enable_authentication = false
 # Add a list of valid API keys. Clients must provide one of these in the X-API-Key header.
 # It is strongly recommended to change these default keys and use secure, randomly generated keys.
 api_keys = ["default-secret-key-please-change"]
+bridge_rate_limit = 10  # Max bridge operations per minute per user
+max_bridge_amount = 1000000  # Maximum single bridge amount in USD equivalent
 
 [storage]
 type = "local"            # local, arweave, web3
@@ -79,9 +81,40 @@ rpc_urls.polygon = "https://polygon-rpc.com"
 rpc_urls.solana = "https://api.mainnet-beta.solana.com"
 max_gas_price = 100.0
 max_slippage = 0.01
-supported_chains = ["ethereum", "polygon", "solana"]
+supported_chains = ["ethereum", "base", "solana", "polygon", "arbitrum", "optimism", "avalanche", "bsc"]
 gas_limit = 300000
 gas_price_strategy = "medium"  # low, medium, high
+
+
+rpc_urls.base = "https://mainnet.base.org"
+rpc_urls.arbitrum = "https://arb1.arbitrum.io/rpc"
+rpc_urls.optimism = "https://mainnet.optimism.io"
+rpc_urls.avalanche = "https://api.avax.network/ext/bc/C/rpc"
+rpc_urls.bsc = "https://bsc-dataseed.binance.org"
+
+# Polkadot ecosystem RPC URLs
+rpc_urls.polkadot = "wss://rpc.polkadot.io"
+rpc_urls.kusama = "wss://kusama-rpc.polkadot.io"
+rpc_urls.statemint = "wss://statemint-rpc.polkadot.io"
+rpc_urls.statemine = "wss://statemine-rpc.polkadot.io"
+rpc_urls.acala = "wss://acala-rpc-0.aca-api.network"
+rpc_urls.karura = "wss://karura-rpc-0.aca-api.network"
+rpc_urls.moonbeam = "wss://wss.api.moonbeam.network"
+rpc_urls.moonriver = "wss://wss.api.moonriver.moonbeam.network"
+rpc_urls.astar = "wss://rpc.astar.network"
+rpc_urls.shiden = "wss://rpc.shiden.astar.network"
+rpc_urls.bifrost = "wss://bifrost-polkadot.api.onfinality.io/public-ws"
+rpc_urls.parallel = "wss://rpc.parallel.fi"
+rpc_urls.centrifuge = "wss://fullnode.centrifuge.io"
+rpc_urls.interlay = "wss://api.interlay.io/parachain"
+
+# Paseo testnet RPC URLs (community-run stable testnet)
+rpc_urls.paseo = "wss://rpc.ibp.network/paseo"
+rpc_urls.asset_hub_paseo = "wss://paseo-asset-hub-rpc.polkadot.io"
+rpc_urls.bridge_hub_paseo = "wss://paseo-bridge-hub-rpc.polkadot.io"
+rpc_urls.people_paseo = "wss://paseo-people-rpc.polkadot.io"
+rpc_urls.coretime_paseo = "wss://paseo-coretime-rpc.polkadot.io"
+
 
 [blockchain.networks.ethereum]
 rpc_url = "https://mainnet.infura.io/v3/your-project-id"
@@ -92,6 +125,34 @@ explorer = "https://etherscan.io"
 rpc_url = "https://polygon-rpc.com"
 chain_id = 137
 explorer = "https://polygonscan.com"
+
+[blockchain.networks.base]
+rpc_url = "https://mainnet.base.org"
+chain_id = 8453
+explorer = "https://basescan.org"
+gas_price_oracle = "https://api.basescan.org/api?module=gastracker&action=gasoracle"
+
+[blockchain.networks.solana]
+rpc_url = "https://api.mainnet-beta.solana.com"
+chain_id = -1  # Solana doesn't use EVM-style chain IDs
+explorer = "https://explorer.solana.com"
+commitment_level = "confirmed"
+
+[blockchain.networks.polygon]
+rpc_url = "https://polygon-rpc.com"
+chain_id = 137
+explorer = "https://polygonscan.com"
+
+[blockchain.networks.arbitrum]
+rpc_url = "https://arb1.arbitrum.io/rpc"
+chain_id = 42161
+explorer = "https://arbiscan.io"
+
+[blockchain.networks.optimism]
+rpc_url = "https://mainnet.optimism.io"
+chain_id = 10
+explorer = "https://optimistic.etherscan.io"
+
 
 [agents]
 max_agents = 100
@@ -111,16 +172,163 @@ confirmations = 12       # blocks
 [bridges.wormhole]
 contract = "0x98f3c9e6E3fAce36bAAd05FE09d375Ef1464288B"
 guardian_rpc = "https://wormhole-v2-mainnet-api.certus.one"
+enabled = true
+contract_ethereum = "0x98f3c9e6E3fAce36bAAd05FE09d375Ef1464288B"
+contract_solana = "worm2ZoG2kUd4vFXhvjh93UUH596ayRfgQ2MgjNMTth"
+contract_base = "0x8d2de8d2f73F1F4cAB472AC9A881C9b123C79627"
+contract_polygon = "0x7A4B5a56256163F07b2C80A7cA55aBE66c4ec4d7"
+contract_arbitrum = "0xa5f208e072434bC67592E4C49C1B991BA79BCA46"
+contract_optimism = "0xEe91C335eab126dF5fDB3797EA9d6aD93aeC9722"
+guardian_rpc = "https://wormhole-v2-mainnet-api.certus.one"
+fixed_fee = 0.0015
+percentage_fee = 0.002
+security_level = "very_high"
 
 [bridges.axelar]
 gateway = "0x4F4495243837681061C4743b74B3eEdf548D56A5"
 gas_service = "0x2d5d7d31F671F86C782533cc367F14109a082712"
+
+
+[bridges.layerzero]
+enabled = true
+contract_ethereum = "0x66A71Dcef29A0fFBDBE3c6a460a3B5BC225Cd675"
+contract_base = "0x1a44076050125825900e736c501f859c50fE728c"
+contract_polygon = "0x3c2269811836af69497E5F486A85D7316753cf62"
+contract_arbitrum = "0x3c2269811836af69497E5F486A85D7316753cf62"
+contract_optimism = "0x3c2269811836af69497E5F486A85D7316753cf62"
+fixed_fee = 0.003
+percentage_fee = 0.0015
+security_level = "high"
+
+
+[bridges.base]
+enabled = true
+contract_ethereum = "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC"
+contract_base = "0x4200000000000000000000000000000000000010"
+contract_optimism = "0x4200000000000000000000000000000000000010"
+contract_arbitrum = "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC"
+fixed_fee = 0.001
+percentage_fee = 0.0025
+security_level = "high"
+
+
+[bridges.solana]
+enabled = true
+contract_ethereum = "0x3ee18B2214AFF97000D974cf647E7C347E8fa585"
+contract_solana = "worm2ZoG2kUd4vFXhvjh93UUH596ayRfgQ2MgjNMTth"
+contract_polygon = "0x5a58505a96D1dbf8dF91cB21B54419FC36e93fdE"
+contract_base = "0x8d2de8d2f73F1F4cAB472AC9A881C9b123C79627"
+fixed_fee = 0.002
+percentage_fee = 0.003
+security_level = "medium"
+
+
+[bridges.layerswap]
+enabled = true
+api_url = "https://api.layerswap.io/api"
+v8_enabled = true
+
+# Contract addresses for LayerSwap V8 atomic swaps
+contract_ethereum = "0x2fc617e933a52713247ce25730f6695920b3befe"
+contract_base = "0x67d3E9cb8d3200444349D2a7794960EeB969631c"
+contract_polygon = "0x2fc617e933a52713247ce25730f6695920b3befe"
+contract_arbitrum = "0x2fc617e933a52713247ce25730f6695920b3befe"
+contract_optimism = "0x2fc617e933a52713247ce25730f6695920b3befe"
+contract_avalanche = "0x2fc617e933a52713247ce25730f6695920b3befe"
+contract_bsc = "0x2fc617e933a52713247ce25730f6695920b3befe"
+contract_solana = "2XfmTmnhz8kDnryZSJKKV53tLN7DKZbrN9Q1sZbJo5bc"
+contract_starknet = "0x0112a045ae21884942faffd7a8087276638e6e4b8a3833a65d14be15eef8f53b"
+
+# V8 Protocol specific contracts
+discovery_contract = "0x67d3E9cb8d3200444349D2a7794960EeB969631c"
+auction_contract = "0x5305aC8c135c650b145Fb59356695E12155107ee"
+
+# Fee structure (very competitive)
+fixed_fee = 0.001
+percentage_fee = 0.001
+security_level = "very_high"
+
+
+# Polkadot XCM cross-consensus messaging configuration
+[bridges.polkadot_xcm]
+enabled = true
+xcm_version = 3
+default_weight_limit = "Unlimited"
+default_fee_asset_item = 0
+
+# Polkadot ecosystem RPC endpoints
+polkadot_rpc = "wss://rpc.polkadot.io"
+kusama_rpc = "wss://kusama-rpc.polkadot.io"
+statemint_rpc = "wss://statemint-rpc.polkadot.io"
+acala_rpc = "wss://acala-rpc-0.aca-api.network"
+moonbeam_rpc = "wss://wss.api.moonbeam.network"
+astar_rpc = "wss://rpc.astar.network"
+
+# Fee structure (very low within Polkadot ecosystem)
+fixed_fee = 0.0005
+percentage_fee = 0.0005
+security_level = "very_high"
+
+# Supported transport methods
+transport_methods = ["XCMP", "HRMP", "VMP", "DMP"]
+
+# Supported parachains (including Paseo testnet system chains)
+supported_parachains = [
+    "statemint", "karura", "acala", "moonbeam", "moonriver",
+    "astar", "shiden", "bifrost", "parallel", "centrifuge",
+    "interlay", "kintsugi", "basilisk", "asset_hub_paseo",
+    "bridge_hub_paseo", "people_paseo", "coretime_paseo"
+]
+
+
+# Cross-chain token mappings
+[tokens]
+# USDC mappings across networks
+[tokens.usdc]
+ethereum = "0xA0b86a33E6441e39A2ae29A5Deba9C9C0b9DB9"
+base = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+polygon = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"
+arbitrum = "0xaf88d065e77c8cC2239327C5EDb3A432268e5831"
+optimism = "0x7F5c764cBc14f9669B88837ca1490cCa17c31607"
+solana = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+decimals = 6
+
+# USDT mappings
+[tokens.usdt]
+ethereum = "0xdAC17F958D2ee523a2206206994597C13D831ec7"
+base = "0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2"
+polygon = "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"
+arbitrum = "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9"
+optimism = "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58"
+solana = "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"
+decimals = 6
+
+# WETH mappings
+[tokens.weth]
+ethereum = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+base = "0x4200000000000000000000000000000000000006"
+polygon = "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619"
+arbitrum = "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1"
+optimism = "0x4200000000000000000000000000000000000006"
+decimals = 18
+
 
 [monitoring]
 enable_metrics = true
 metrics_port = 9090
 enable_tracing = true
 trace_sample_rate = 0.1   # 10% of requests
+bridge_monitoring = true
+alert_webhook_url = ""
+
+
+# Bridge-specific monitoring
+[monitoring.bridges]
+health_check_interval = 60  # seconds
+failure_threshold = 3
+recovery_threshold = 2
+alert_on_failure = true
+log_all_transfers = true
 
 [development]
 hot_reload = true
@@ -154,3 +362,6 @@ enabled = true
 level = "info"
 format = "json"
 retention_days = 7 
+retention_days = 7
+bridge_log_level = "debug"
+transaction_logging = true
